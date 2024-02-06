@@ -1,7 +1,10 @@
 const router = require("express").Router();
+const {
+  getAllUsers,
+  getSingleUser,
+} = require("../controllers/userControllers");
 
-router.get("/users", (req, res) => {
-  res.send("This is a User Route from Routes.......");
-});
+router.get("/users", getAllUsers);
+router.get("/users/:userID", getSingleUser);
 
 module.exports = router;

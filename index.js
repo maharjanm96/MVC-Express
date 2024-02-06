@@ -1,5 +1,6 @@
 const express = require("express");
 const connectDatabase = require("./database/connection");
+const logger= require("./middleware/logger")
 require("dotenv").config();
 const port = 8000;
 
@@ -9,7 +10,8 @@ const userRoutes = require("./routes/userRoute");
 const errorRoutes = require("./routes/errorRoute");
 
 const app = express();
-connectDatabase();
+//connectDatabase();
+app.use(logger);
 
 app.use("/api/", homeRoutes);
 app.use("/api/", userRoutes);
