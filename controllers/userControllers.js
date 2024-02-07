@@ -1,19 +1,14 @@
-const apiData = require("../data/users");
-const getAllUsers = async (req, res) => {
-  const data = await apiData();
-  res.send(data);
-};
+const userModel = require("../models/userModel");
 
-const getSingleUser = async (req, res) => {
-  const { userID } = req.params;
+const getAllUsers = async (req, res) => {
   try {
-    const { users } = await apiData();
-    const user = users.find((user) => user.id === Number(userID));
-    if (!user) return res.satus(401).json({ message: "User not found." });
-    if (user) return res.status(200).json(user);
+    const users = await userModel.find({}, {password: 0});
+    res.status(200).json(users);
   } catch (err) {
-    res.satus(500).json({ message: "Something Went Wrong.", error: err });
+    res.status(500).json({ message: "Something Went Wrong.", error: err });
   }
 };
 
-module.exports = { getAllUsers, getSingleUser };
+
+
+module.exports = {getAllUsers};

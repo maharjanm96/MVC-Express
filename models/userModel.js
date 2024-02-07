@@ -1,9 +1,10 @@
-const mongoose = require(mongoose);
+const mongoose = require("mongoose");
 const validator = require("validator");
-const userSchema = mongoose.schema({
-  fullName: {
+const bcrypt = require("bcrypt");
+const userSchema = mongoose.Schema({
+  username: {
     type: String,
-    required: [true, "Fullname is required"],
+    required: true,
     unique: false,
     validate: {
       validator: validator.isAlpha,
@@ -13,17 +14,13 @@ const userSchema = mongoose.schema({
 
   email: {
     type: String,
-    required: [true, "Email is required"],
+    required: true,
     unique: true,
-    validate: {
-      validator: validator.isEmail,
-      message: "Invalid Email",
-    },
   },
-
+  
   password: {
     type: String,
-    required: [true, "Password is required"],
+    required: true,
     validate: {
       validator: validator.isStrongPassword,
     },
@@ -36,11 +33,15 @@ const userSchema = mongoose.schema({
 });
 
 userSchema.pre("save", async function (next) {
-  const salt = await bcrypt.getSalt();
-  this.password = await bcrypt.hash(this.password, salt);
-  next();
+  try {
+    const salt = await bcrypt.genSalt(10);
+    this.password = await bcrypt.hash(this.password, salt);
+    next();
+  } catch (error) {
+    next(error);
+  }
 });
 
-const userModel = mongoose.mdoel("user", userSchema);
+const userModel = mongoose.model("user", userSchema);
 
-mdoeule.exports = userModel;
+module.exports = userModel;
