@@ -2,13 +2,19 @@ const mongoose = require("mongoose");
 const validator = require("validator");
 const bcrypt = require("bcrypt");
 const userSchema = mongoose.Schema({
-  username: {
+  fullname: {
     type: String,
     required: true,
     unique: false,
     validate: {
-      validator: validator.isAlpha,
-      message: "Invalid Fullname ",
+      validator: function (value) {
+        return (
+          validator.isAlpha(value.replace(/\s/g, ""), "en-US", {
+            ignore: " ",
+          }) && value.includes(" ")
+        );
+      },
+      message: "Invalid Fullname",
     },
   },
 
@@ -17,7 +23,7 @@ const userSchema = mongoose.Schema({
     required: true,
     unique: true,
   },
-  
+
   password: {
     type: String,
     required: true,
